@@ -1,1 +1,2 @@
-# potato_discord_bot
+# Potatobot
+Discord bot pwned by potatos
