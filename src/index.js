@@ -8,11 +8,15 @@ var s = require('../strings.json');
 var client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync(__dirname+'/commands').filter(file=>file.endsWith('.js'));
+const dirs = fs.readdirSync(__dirname+'/commands');
 
-for(var file of commandFiles) {
-    var command = require(__dirname+ '/commands/'+file);
-    client.commands.set(command.name, command);
+for(var dir of dirs) {
+    var categoryDir = fs.readdirSync(__dirname+'/commands/'+dir).filter(file=>file.endsWith('.js'));
+    for(var file of categoryDir) {
+        var command = require(__dirname+ '/commands/'+dir+'/'+file);
+        command.category = dir;
+        client.commands.set(command.name, command);
+    }
 }
 //#endregion
 
@@ -33,7 +37,7 @@ client.on('message', (msg)=>{
         return msg.channel.send(s.unknown_command);
     }
     
-    command.execute({msg: msg, args: args, client: client});
+    command.execute({msg: msg, args: args, client: client, prefix: config.prefix});
 });
 
 client.login(auth.token);
