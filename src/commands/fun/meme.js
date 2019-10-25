@@ -36,10 +36,7 @@ async function meme(o) {
     
 
     var category, categoryText;
-    if(o.args.length < 1) { // Default category
-        category = 'Memes';
-        categoryText = 'memic';
-    } else if(o.args[0] == 'random') {  // Random category
+    if(o.args.length < 1 || o.args[0] == 'random') {  // Random category
         var categoriesArray = Object.keys(categories);
         var index = Math.floor(Math.random()*categoriesArray.length);
         category = categories[categoriesArray[index]];
@@ -52,7 +49,6 @@ async function meme(o) {
     }
 
     var waiting = await o.msg.channel.send('> Please wait...');;
-    console.log(category);
 
     fetch(getUrl('hot', category))
     .then(r=>r.json())
@@ -66,7 +62,8 @@ async function meme(o) {
             .setAuthor(o.msg.author.username+'\'s '+categoryText+' meme', o.msg.author.avatarURL)
             .setFooter('Posted by '+meme.author + ' | `'+o.prefix+'meme help` for list of categories')
             .setColor('RANDOM')
-            .setImage(meme.url);
+            .setImage(meme.url)
+            .setURL(meme.url);
 
         waiting.delete();
         var sent = await o.msg.channel.send(embed);
